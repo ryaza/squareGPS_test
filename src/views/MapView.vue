@@ -15,15 +15,9 @@ import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import L, { Map, LeafletMouseEvent } from 'leaflet';
+import { IMarker, FetchAddress, AddMarker } from '@/types';
 import Backend from '@/api/Backend';
 import MarkerList from '@/components/MarkerList.vue';
-
-interface IMarker {
-  id: number;
-  lat: number;
-  lng: number;
-  address: string;
-}
 
 export default defineComponent({
   name: 'MapView',
@@ -43,7 +37,7 @@ export default defineComponent({
       isAddMode.value = !isAddMode.value;
     };
 
-    const fetchAddress = async (lat: number, lng: number): Promise<string | null> => {
+    const fetchAddress: FetchAddress = async (lat, lng) => {
       try {
         const apiKey = '678104b27b645724661641xrk721041';
         const response = await fetch(`https://geocode.maps.co/reverse?lat=${lat}&lon=${lng}&api_key=${apiKey}`);
@@ -60,7 +54,7 @@ export default defineComponent({
       }
     };
 
-    const addMarker = async (lat: number, lng: number) => {
+    const addMarker: AddMarker = async (lat, lng) => {
       if (!map) return;
 
       const address = await fetchAddress(lat, lng);
@@ -123,7 +117,7 @@ export default defineComponent({
               '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
           }),
         ],
-      }).setView([51.505, -0.09], 13);
+      }).setView([44.8125, 20.4612], 13);
 
       await loadMarkers();
 

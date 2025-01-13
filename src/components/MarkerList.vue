@@ -30,13 +30,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
-
-interface IMarker {
-  lat: number;
-  lng: number;
-  address: string;
-  id: number,
-}
+import { IMarker } from '@/types';
 
 export default defineComponent({
   name: 'MarkerList',

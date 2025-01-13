@@ -3,11 +3,7 @@ import { createRouter, createWebHistory, RouteRecordRaw } from 'vue-router';
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'home',
-    components: {
-      default: () => import(/* webpackChunkName: "home" */ '@/views/HomeView.vue'),
-      header: () => import(/* webpackChunkName: "header" */ '@/components/CustomHeader.vue'),
-    },
+    redirect: 'map',
   },
   {
     path: '/about',

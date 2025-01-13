@@ -1,14 +1,10 @@
 import { createStore } from 'vuex';
+import markersModule from './modules/markers';
 
-export default createStore({
-  state: {
-  },
-  getters: {
-  },
-  mutations: {
-  },
-  actions: {
-  },
+const store = createStore({
   modules: {
+    markers: markersModule,
   },
 });
+
+export default store;

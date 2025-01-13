@@ -1,8 +1,7 @@
 <template>
   <div class="map-view">
     <MarkerList
-      :list="markers"
-      :selected-item-id="selectedIItemId"
+      :list="savedMarkers"
       class="map-list"
       @select.self="selectMarker"
     />
@@ -14,9 +13,9 @@
 import { defineComponent, onMounted, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
+import { useStore } from 'vuex';
 import L, { Map, LeafletMouseEvent } from 'leaflet';
 import { IMarker, FetchAddress, AddMarker } from '@/types';
-import Backend from '@/api/Backend';
 import MarkerList from '@/components/MarkerList.vue';
 
 export default defineComponent({
@@ -25,13 +24,12 @@ export default defineComponent({
     MarkerList,
   },
   setup() {
+    const store = useStore();
     const router = useRouter();
     const t = useI18n();
     let map: Map;
-    const markers = ref<IMarker[]>([]);
+    const savedMarkers = ref<IMarker[]>([]);
     const isAddMode = ref(false);
-    const selectedIItemId = ref(0);
-    const markerBackend = new Backend<IMarker>('markers');
 
     const toggleAddMode = () => {
       isAddMode.value = !isAddMode.value;
@@ -66,42 +64,50 @@ export default defineComponent({
       }
 
       const id = +new Date();
-      const markerValue: IMarker = {
+      const marker: IMarker = {
         id, lat, lng, address,
       };
 
-      const marker = L.marker([lat, lng]).addTo(map);
-      marker.bindPopup(`${t.t('address')} ${address}`).openPopup();
+      const leafletMarker = L.marker([lat, lng]).addTo(map);
+      leafletMarker.bindPopup(`${t.t('address')} ${address}`).openPopup();
 
-      marker.on('click', () => {
-        selectedIItemId.value = id;
+      leafletMarker.on('click', () => {
+        store.dispatch('markers/selectMarker', id);
         router.push({ name: 'mapWithId', params: { id } });
       });
 
-      await markerBackend.add(markerValue);
-      markers.value.push(markerValue);
+      await store.dispatch('markers/addMarker', marker);
     };
 
     const loadMarkers = async () => {
-      const savedMarkers = await markerBackend.getAll();
+      await store.dispatch('markers/fetchMarkers');
 
-      savedMarkers.forEach((markerData) => {
-        const marker = L.marker([markerData.lat, markerData.lng]).addTo(map);
-        marker.bindPopup(`${t.t('address')} ${markerData.address}`);
+      savedMarkers.value = store.getters['markers/markers'];
+      savedMarkers.value.forEach((markerData: IMarker) => {
+        const leafletMarker = L.marker([markerData.lat, markerData.lng]).addTo(map);
+        leafletMarker.bindPopup(`${t.t('address')} ${markerData.address}`);
 
-        marker.on('click', () => {
-          selectedIItemId.value = markerData.id;
+        leafletMarker.on('click', () => {
+          store.dispatch('markers/selectMarker', markerData.id);
           router.push({ name: 'mapWithId', params: { id: markerData.id } });
         });
       });
-
-      markers.value = savedMarkers;
     };
 
     const selectMarker = (id: number) => {
-      const selectedMarker = markers.value.find((m) => m.id === id);
-      selectedIItemId.value = id;
+      const selectedMarker: IMarker = savedMarkers.value.find((m) => m.id === id) as IMarker;
+      map.eachLayer((layer) => {
+        if (layer instanceof L.Marker) {
+          const { lat, lng } = layer.getLatLng();
+          if (lat === selectedMarker.lat && lng === selectedMarker.lng) {
+            layer.openPopup();
+          } else {
+            layer.closePopup();
+          }
+        }
+      });
       map.setView([selectedMarker!.lat, selectedMarker!.lng], map.getZoom());
+      store.dispatch('markers/selectMarker', selectedMarker.id);
       router.push({ name: 'mapWithId', params: { id } });
     };
 
@@ -152,8 +158,7 @@ export default defineComponent({
     });
 
     return {
-      markers,
-      selectedIItemId,
+      savedMarkers,
       selectMarker,
     };
   },

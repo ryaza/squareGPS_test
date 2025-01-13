@@ -31,6 +31,7 @@
 <script lang="ts">
 import { defineComponent, PropType } from 'vue';
 import { IMarker } from '@/types';
+import { useStore } from 'vuex';
 
 export default defineComponent({
   name: 'MarkerList',
@@ -39,13 +40,11 @@ export default defineComponent({
       type: Array as PropType<IMarker[]>,
       default: () => [],
     },
-    selectedItemId: {
-      type: Number,
-      default: 0,
-    },
   },
   setup(props, { emit }) {
-    const isItemSelected = (id: number): boolean => id === props.selectedItemId;
+    const store = useStore();
+    const selectedMarkerId = store.getters['markers/selectedMarkerId'];
+    const isItemSelected = (id: number): boolean => id === selectedMarkerId;
 
     const onSelect = (id: number) => {
       emit('select', id);

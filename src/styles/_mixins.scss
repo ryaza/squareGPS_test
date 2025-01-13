@@ -1,0 +1,15 @@
+@mixin respond($breakpoints...) {
+  @each $breakpoint in $breakpoints {
+    @if $breakpoint == tablet {
+      @media (min-width: 768px) and (max-width: 1024px) {
+        @content;
+      }
+    } @else if $breakpoint == mobile {
+      @media (max-width: 767px) {
+        @content;
+      }
+    } @else {
+      @warn "Неизвестный breakpoint: #{$breakpoint}";
+    }
+  }
+}

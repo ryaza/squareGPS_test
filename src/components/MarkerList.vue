@@ -89,11 +89,11 @@ export default defineComponent({
     overflow-y: auto;
 
     @include respond(tablet) {
-      max-height: 450px;
+      max-height: 300px;
     }
 
     @include respond(mobile) {
-      max-height: 250px;
+      max-height: 200px;
     }
   }
 

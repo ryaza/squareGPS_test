@@ -171,14 +171,20 @@ export default defineComponent({
         onAdd: () => {
           const button = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
           button.innerText = isAddMode.value ? t.t('stop') : '+';
-          button.style.backgroundColor = '#fff';
+          button.style.backgroundColor = '#2196F3';
           button.style.width = '50px';
-          button.style.height = '30px';
+          button.style.height = '50px';
+          button.style.borderRadius = '100%';
+          button.style.border = 'none';
+          button.style.color = '#fff';
+          button.style.fontSize = '16px';
+          button.style.cursor = 'pointer';
 
           L.DomEvent.on(button, 'click', (e) => {
             L.DomEvent.stopPropagation(e);
             toggleAddMode();
             button.innerText = isAddMode.value ? t.t('stop') : '+';
+            button.style.backgroundColor = isAddMode.value ? '#EF5350' : '#2196F3';
           });
 
           return button;
@@ -223,6 +229,11 @@ export default defineComponent({
 
   @include respond(mobile,tablet) {
     margin: 20px auto;
+    max-height: 600px;
+  }
+
+  @include respond(mobile) {
+    max-height: 350px;
   }
 }
 </style>

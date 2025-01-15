@@ -1,16 +1,30 @@
 <template>
-  <div class="map-view">
-    <MarkerList
-      :list="savedMarkers"
-      class="map-list"
-      @select.self="selectMarker"
-    />
-    <div id="map" />
-  </div>
+  <v-container>
+    <v-snackbar
+      v-model="snackbar"
+      color="error"
+      :timeout="3000"
+      top
+    >
+      {{ snackbarMessage }}
+      <template #actions>
+        <v-btn text @click="snackbar = false">Close</v-btn>
+      </template>
+    </v-snackbar>
+    <div class="map-view">
+      <MarkerList
+        :list="savedMarkers"
+        class="map-list"
+        @select.self="selectMarker"
+      />
+      <div id="map" />
+    </div>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { defineComponent, onMounted, ref } from 'vue';
+import VueScrollTo from 'vue-scrollto';
 import { useRouter } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import { useStore } from 'vuex';
@@ -30,6 +44,13 @@ export default defineComponent({
     let map: Map;
     const savedMarkers = ref<IMarker[]>([]);
     const isAddMode = ref(false);
+    const snackbar = ref(false);
+    const snackbarMessage = ref('');
+
+    const showSnackbar = (message: string) => {
+      snackbarMessage.value = message;
+      snackbar.value = true;
+    };
 
     const toggleAddMode = () => {
       isAddMode.value = !isAddMode.value;
@@ -59,7 +80,7 @@ export default defineComponent({
 
       if (!address) {
         console.error('Маркер не добавлен из-за ошибки при получении адреса');
-        alert('Маркер не добавлен из-за ошибки при получении адреса');
+        showSnackbar(t.t('error'));
         return;
       }
 
@@ -90,6 +111,15 @@ export default defineComponent({
         leafletMarker.on('click', () => {
           store.dispatch('markers/selectMarker', markerData.id);
           router.push({ name: 'mapWithId', params: { id: markerData.id } });
+
+          const target = document.getElementById(`marker-${markerData.id}`);
+          if (target) {
+            VueScrollTo.scrollTo(target, 500, {
+              container: '.marker-list__list',
+              duration: 500,
+              easing: 'ease-in-out',
+            });
+          }
         });
       });
     };
@@ -140,7 +170,7 @@ export default defineComponent({
         },
         onAdd: () => {
           const button = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-          button.innerText = isAddMode.value ? '-' : '+';
+          button.innerText = isAddMode.value ? t.t('stop') : '+';
           button.style.backgroundColor = '#fff';
           button.style.width = '50px';
           button.style.height = '30px';
@@ -160,6 +190,9 @@ export default defineComponent({
     return {
       savedMarkers,
       selectMarker,
+      snackbar,
+      snackbarMessage,
+      showSnackbar,
     };
   },
 });
@@ -178,8 +211,7 @@ export default defineComponent({
 }
 
 .map-list {
-  width: 300px;
-
+  min-width: 300px;
   @include respond(mobile,tablet) {
     width: 100%;
   }
@@ -188,7 +220,6 @@ export default defineComponent({
 #map {
   height: 100%;
   width: 100%;
-  margin-top: 40px;
 
   @include respond(mobile,tablet) {
     margin: 20px auto;

@@ -1,6 +1,8 @@
 <template>
-  <router-view name="header"></router-view>
-  <router-view/>
+  <v-app>
+    <router-view name="header"></router-view>
+    <router-view/>
+  </v-app>
 </template>
 
 <style lang="scss">
@@ -20,3 +22,5 @@
   padding: 0 20px;
 }
 </style>
+<script setup lang="ts">
+</script>

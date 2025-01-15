@@ -39,6 +39,8 @@ export default defineComponent({
 .custom-header {
   width: 100%;
   padding: 20px 0;
+  border-bottom: 1px solid #2c3e50;
+  margin-bottom: 20px;
 
   &__wrapper {
     display: flex;

@@ -5,7 +5,9 @@ module.exports = defineConfig({
   css: {
     loaderOptions: {
       scss: {
-        additionalData: '@import "@/styles/_mixins.scss";',
+        additionalData: `
+          @use "@/styles/_mixins.scss" as *;
+        `,
       },
     },
   },

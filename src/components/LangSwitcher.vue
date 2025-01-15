@@ -1,21 +1,31 @@
 <template>
-  <div class="language-switcher">
-    <button @click="toggleDropdown" class="language-btn">
-      <span class="arrow" :class="{ open: isDropdownOpen }">
+  <v-menu
+    v-model="isDropdownOpen"
+    offset-y
+    transition="scale-transition"
+  >
+    <template #activator="{ props }">
+      <v-btn
+        icon
+        v-bind="props"
+        class="language-btn"
+      >
         <font-awesome-icon :icon="['fas', 'globe']" />
-      </span>
-    </button>
-    <ul v-if="isDropdownOpen" class="language-menu">
-      <li
+      </v-btn>
+    </template>
+    <v-list class="language-menu">
+      <v-list-item
         v-for="lang in languages"
         :key="lang.code"
         @click="changeLanguage(lang.code)"
         :class="{ active: lang.code === currentLanguage }"
       >
-        {{ lang.name }}
-      </li>
-    </ul>
-  </div>
+        <v-list-item-title>
+          {{ lang.name }}
+        </v-list-item-title>
+      </v-list-item>
+    </v-list>
+  </v-menu>
 </template>
 
 <script lang="ts">
@@ -70,70 +80,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style scoped lang="scss">
-.language-switcher {
-  position: relative;
-  display: inline-block;
-  font-family: Arial, sans-serif;
-}
-
-.language-btn {
-  background-color: #4998da;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  opacity: 1;
-}
-
-.language-btn:hover {
-  opacity: 0.8;
-}
-
-.arrow {
-  font-size: 12px;
-  transition: transform 0.3s ease;
-}
-
-.arrow.open {
-  transform: rotate(180deg);
-}
-
-.language-menu {
-  position: absolute;
-  top: 100%;
-  right: 0;
-  background-color: white;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  margin-top: 5px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  list-style: none;
-  padding: 5px 0;
-  width: 150px;
-  z-index: 1000;
-}
-
-.language-menu li {
-  padding: 10px 15px;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
-}
-
-.language-menu li:hover {
-  background-color: #f0f0f0;
-}
-
-.language-menu li.active {
-  background-color: #4998da;
-  color: white;
-  font-weight: bold;
-}
-</style>

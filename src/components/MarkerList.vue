@@ -1,35 +1,46 @@
 <template>
-  <div class="marker-list">
-    <h3 class="marker-list__title">
-      {{ $t('markers')}}
-    </h3>
-    <ul
-      v-if="list.length"
-      class="marker-list__list"
-    >
-      <li
-        v-for="(item, index) in list"
-        :key="`Marker-${item.id}`"
-        class="marker-list__item"
-        :class="{ 'marker-list__item--selected': isItemSelected(item.id) }"
-        @click="() => onSelect(item.id)"
+  <v-card class="marker-list">
+    <v-card-title>
+      {{ $t('markers') }}
+    </v-card-title>
+    <v-card-text>
+      <v-list
+        v-if="list.length"
+        class="marker-list__list"
       >
-        <strong> {{ $t('marker')}} №{{index + 1}} </strong>
-        <div>
-          {{ item.lat }}, {{ item.lng }}
-        </div>
-      </li>
-    </ul>
-    <font-awesome-icon
-      v-else
-      class="marker-list__icon"
-      :icon="['fas', 'road-barrier']"
-    />
-  </div>
+        <v-list-item
+          v-for="(item, index) in list"
+          :key="`Marker-${item.id}`"
+          class="marker-list__item"
+          :id="`marker-${item.id}`"
+          :class="getItemClasses(item.id)"
+          @click="onSelect(item.id)"
+        >
+          <v-list-item-title>
+            <strong>{{ $t('marker') }} №{{ index + 1 }}</strong>
+          </v-list-item-title>
+          <v-list-item-subtitle>
+            {{ item.lat }}
+          </v-list-item-subtitle>
+          <v-list-item-subtitle>
+            {{ item.lng }}
+          </v-list-item-subtitle>
+        </v-list-item>
+      </v-list>
+      <v-icon
+        v-else
+        class="marker-list__icon"
+        color="grey"
+        size="48"
+      >
+        mdi-road-barrier
+      </v-icon>
+    </v-card-text>
+  </v-card>
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue';
+import { defineComponent, computed, PropType } from 'vue';
 import { IMarker } from '@/types';
 import { useStore } from 'vuex';
 
@@ -41,18 +52,29 @@ export default defineComponent({
       default: () => [],
     },
   },
-  setup(props, { emit }) {
+  setup(_, { emit }) {
     const store = useStore();
-    const selectedMarkerId = store.getters['markers/selectedMarkerId'];
-    const isItemSelected = (id: number): boolean => id === selectedMarkerId;
+    const selectedMarkerId = computed(() => store.getters['markers/selectedMarkerId']);
+    const isItemSelected = (id: number): boolean => id === selectedMarkerId.value;
 
     const onSelect = (id: number) => {
       emit('select', id);
     };
 
+    const getItemClasses = (id: number) => {
+      const isSelected = isItemSelected(id);
+      return {
+        'border-sm': isSelected,
+        'bg-grey-lighten-5': isSelected,
+        rounded: isSelected,
+      };
+    };
+
     return {
       isItemSelected,
       onSelect,
+      selectedMarkerId,
+      getItemClasses,
     };
   },
 });
@@ -62,15 +84,9 @@ export default defineComponent({
 .marker-list {
   padding: 16px;
 
-  &__title {
-    font-size: 26px;
-    margin-bottom: 24px;
-  }
-
   &__list {
-    list-style: none;
-    height: 100%;
-    overflow: scroll;
+    max-height: 700px;
+    overflow-y: auto;
 
     @include respond(tablet) {
       max-height: 450px;
@@ -82,19 +98,7 @@ export default defineComponent({
   }
 
   &__item {
-    margin-bottom: 16px;
-    padding: 5px;
-    cursor: pointer;
-
-    &--selected {
-      background-color: #f0f8ff;
-      border: 2px solid #007BFF;
-      border-radius: 8px;
-    }
-  }
-
-  &__icon {
-    font-size: 100px;
+    margin: 5px 0;
   }
 }
 </style>

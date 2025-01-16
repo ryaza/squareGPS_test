@@ -8,6 +8,7 @@
   "assignment": "Test assignment for SquareGps",
   "backendService": "Local data storage should be organized as a service emulating a backend. (A Backend class is required to asynchronously save data to localStorage)",
   "centerMap": "When clicking on a list item, the map should center on the marker.",
+  "close": "Close",
   "createApplication": "Using <strong>Vuejs, Vuex, VueRouter, Vuetify</strong>, create an application. The header of the application should contain a menu with 2 items: <strong>About Task</strong> and <strong>Map</strong>. The main part of the application should display the content of the sections.",
   "error": "The marker was not added due to an error in retrieving the address.",
   "errorHandling": "If the address is not found, an error must be displayed, and the marker should not be added to the list.",

@@ -8,7 +8,7 @@
     >
       {{ snackbarMessage }}
       <template #actions>
-        <v-btn text @click="snackbar = false">Close</v-btn>
+        <v-btn text @click="snackbar = false"> {{ $t('close') }} </v-btn>
       </template>
     </v-snackbar>
     <div class="map-view">
@@ -212,6 +212,7 @@ export default defineComponent({
 
   @include respond(mobile,tablet) {
     flex-direction: column-reverse;
+    justify-content: flex-end;
     height: 100vh;
   }
 }

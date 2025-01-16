@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
-import VueScrollTo from 'vue-scrollto';
 import App from './App.vue';
 import router from './router';
 import store from './store';
@@ -13,6 +12,5 @@ app
   .use(router)
   .use(i18n)
   .use(vuetify)
-  .use(VueScrollTo)
   .component('font-awesome-icon', FontAwesomeIcon)
   .mount('#app');

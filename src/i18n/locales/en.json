@@ -12,6 +12,7 @@
   "error": "The marker was not added due to an error in retrieving the address.",
   "errorHandling": "If the address is not found, an error must be displayed, and the marker should not be added to the list.",
   "example": "Example:",
+  "listEmpty": "The list is empty",
   "localization": "Provide localization support.",
   "map": "Map",
   "mapInstructions": "The screen should display a map and a list (see example):",

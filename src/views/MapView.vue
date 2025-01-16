@@ -41,11 +41,11 @@ export default defineComponent({
     const store = useStore();
     const router = useRouter();
     const t = useI18n();
-    let map: Map;
     const savedMarkers = ref<IMarker[]>([]);
     const isAddMode = ref(false);
     const snackbar = ref(false);
     const snackbarMessage = ref('');
+    let map: Map;
 
     const showSnackbar = (message: string) => {
       snackbarMessage.value = message;

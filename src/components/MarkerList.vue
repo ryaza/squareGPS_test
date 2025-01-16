@@ -27,14 +27,7 @@
           </v-list-item-subtitle>
         </v-list-item>
       </v-list>
-      <v-icon
-        v-else
-        class="marker-list__icon"
-        color="grey"
-        size="48"
-      >
-        mdi-road-barrier
-      </v-icon>
+      <span v-else> {{ $t('listEmpty') }} </span>
     </v-card-text>
   </v-card>
 </template>

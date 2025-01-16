@@ -15,6 +15,7 @@ const i18n = createI18n({
 });
 
 const loadedLanguages: Set<string> = new Set();
+
 export async function loadLocaleMessages(locale: Locale) {
   if (!loadedLanguages.has(locale)) {
     try {
@@ -28,6 +29,8 @@ export async function loadLocaleMessages(locale: Locale) {
   i18n.global.locale.value = locale;
 }
 
-await loadLocaleMessages('ru');
+export async function initializeI18n() {
+  await loadLocaleMessages('ru');
+}
 
 export default i18n;

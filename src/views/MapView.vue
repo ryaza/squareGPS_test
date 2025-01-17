@@ -230,7 +230,10 @@ export default defineComponent({
 
   @include respond(mobile,tablet) {
     margin: 20px auto;
-    max-height: 600px;
+  }
+
+  @include respond(tablet) {
+    max-height: 450px;
   }
 
   @include respond(mobile) {
